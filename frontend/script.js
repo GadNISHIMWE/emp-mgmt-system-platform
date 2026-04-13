@@ -136,3 +136,58 @@ function signup() {
   window.location = "login.html";
 }
 
+// ------------------load employees------------------
+async function loadEmployees() {
+  const res = await fetch("http://localhost:5000/api/employees");
+  const data = await res.json();
+
+  const table = document.getElementById("employeeTable");
+  table.innerHTML = "";
+
+  data.forEach(emp => {
+    table.innerHTML += `
+      <tr>
+        <td>${emp.name}</td>
+        <td>${emp.department}</td>
+        <td>${emp.position}</td>
+        <td>
+          <button onclick="deleteEmployee(${emp.id})">Delete</button>
+        </td>
+      </tr>
+    `;
+  });
+
+  document.getElementById("totalEmployees").innerText = data.length;
+}
+
+// ------autoload employee------
+if (document.getElementById("employeeTable")) {
+  loadEmployees();
+}
+
+// -------------add employee----------------
+async function saveEmployee() {
+  const name = document.getElementById("name").value;
+  const department = document.getElementById("department").value;
+  const position = document.getElementById("position").value;
+
+  await fetch("http://localhost:5000/api/employees", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ name, department, position })
+  });
+
+  loadEmployees();
+}
+
+// ---------------delete employees---------
+
+async function deleteEmployee(id) {
+  await fetch(`http://localhost:5000/api/employees/${id}`, {
+    method: "DELETE"
+  });
+
+  loadEmployees();
+}
