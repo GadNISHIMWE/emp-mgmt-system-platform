@@ -7,24 +7,23 @@
 </head>
 <body>
 
+  <div class="background-circle"></div>
 <!-- NAVBAR -->
 <header class="navbar">
   <div class="logo">EMS</div>
 
   <nav>
-    <ul class="nav-links">
-      <li><a href="#">Home</a></li>
-      <li><a href="#">Dashboard</a></li>
-      <li><a href="#">Employees</a></li>
-      <li><a href="#">Departments</a></li>
-      <li><a href="#">Reports</a></li>
-      <li><a href="#">Support</a></li>
-      <li><a href="#">Login</a></li>
-    </ul>
+  <ul class="nav-links">
+    <li><a href="#">Home</a></li>
+    <li><a href="features.html">Features</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#contact">Support</a></li>
+    <li><a href="login.html">Login</a></li>
+  </ul>
   </nav>
 
-  <button class="btn-primary">Get Started</button>
-</header>
+  <a href="login.html"><button class="btn-primary">Get Started</button>
+</header></a>
 
 <!-- HERO SECTION -->
 <section class="hero">
@@ -34,7 +33,9 @@
       Manage employees, track performance, and organize your company
       operations in one smart system.
     </p>
-    <button class="btn-primary">Start Now</button>
+        <a href="login.html">
+      <button class="btn-primary" onclick="explore()">Explore Features</button>
+    </a>
   </div>
 
   <div class="hero-image">
@@ -51,5 +52,58 @@
   </div>
 </section>
 
+
+
+
+
+
+
+<footer class="footer">
+
+  <div class="footer-container">
+
+    <!-- Logo & Description -->
+    <div class="footer-section">
+      <h3>EMS Platform</h3>
+      <p>
+        A smart system to manage employees, track attendance,
+        and improve productivity.
+      </p>
+    </div>
+
+    <!-- Quick Links -->
+    <div class="footer-section">
+      <h4>Quick Links</h4>
+      <ul>
+        <li><a href="#">Home</a></li>
+        <li><a href="#features">Features</a></li>
+        <li><a href="#about">About</a></li>
+      </ul>
+    </div>
+
+    <!-- Services -->
+    <div class="footer-section">
+      <h4>Services</h4>
+      <ul>
+        <li>Employee Management</li>
+        <li>Task Assignment</li>
+        <li>Attendance Tracking</li>
+      </ul>
+    </div>
+
+    <!-- Contact -->
+    <div class="footer-section">
+      <h4>Contact</h4>
+      <p>Email: support@ems.com</p>
+      <p>Phone: +250 XXX XXX XXX</p>
+    </div>
+
+  </div>
+
+  <div class="footer-bottom">
+    <p>© 2026 Employee Management Platform. All rights reserved.</p>
+  </div>
+
+</footer>
 </body>
 </html>

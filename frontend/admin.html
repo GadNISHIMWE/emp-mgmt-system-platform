@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Dashboard - EMS</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="dashboard">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <h2>EMS</h2>
+    <ul>
+      <li>Dashboard</li>
+      <li>Employees</li>
+      <li>Tasks</li>
+      <li>Attendance</li>
+      <li>Reports</li>
+      <li onclick="logout()">Logout</li>
+    </ul>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <div class="main">
+
+    <!-- TOP BAR -->
+    <div class="topbar">
+      <h1>Dashboard</h1>
+      <p>Welcome, Admin 👋</p>
+    </div>
+
+    <!-- CARDS -->
+    <div class="cards">
+      <div class="card">Total Employees: <span id="totalEmployees">0</span></div>
+      <div class="card">Tasks Assigned: 12</div>
+      <div class="card">Attendance Today: 8</div>
+    </div>
+
+    <!-- EMPLOYEE MANAGEMENT -->
+    <div class="section">
+      <h2>Manage Employees</h2>
+
+      <div class="form">
+        <input type="text" id="name" placeholder="Name">
+        <input type="text" id="department" placeholder="Department">
+        <input type="text" id="position" placeholder="Position">
+        <button onclick="saveEmployee()">Save</button>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Department</th>
+            <th>Position</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="employeeTable"></tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+<!-- <script>
+if (localStorage.getItem("role") !== "admin") {
+  window.location = "login.html";
+}
+</script> -->
+<script src="script.js"></script>
+</body>
+</html>
