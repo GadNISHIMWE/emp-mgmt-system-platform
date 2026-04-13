@@ -109,9 +109,9 @@ function login() {
 // -----------------------------signup------------------------------
 
 function signup() {
-  const username = document.getElementById("newUsername").value;
-  const password = document.getElementById("newPassword").value;
-  const role = document.getElementById("newRole").value;
+  const username = document.getElementById("username").value;
+  const password = document.getElementById("password").value;
+  const role = document.getElementById("role").value;
 
   if (!username || !password) {
     alert("Please fill all fields");
