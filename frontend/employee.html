@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Admin Dashboard - EMS</title>
+  <title>Employee Dashboard - EMS</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -11,47 +11,46 @@
   <aside class="sidebar">
     <h2>EMS</h2>
     <ul>
-      <li>Dashboard</li>
-      <li>Employees</li>
+      <li class="active">Dashboard</li>
+      <li>My Profile</li>
       <li>Tasks</li>
       <li>Attendance</li>
-      <li>Reports</li>
       <li onclick="logout()">Logout</li>
     </ul>
   </aside>
 
   <div class="main">
     <div class="topbar">
-      <h1>Dashboard</h1>
-      <p>Welcome, Admin</p>
+      <h1>Employee Dashboard</h1>
+      <p>Welcome, <span id="emp-name">...</span></p>
     </div>
 
     <div class="cards">
-      <div class="card">Total Employees: <span id="totalEmployees">0</span></div>
-      <div class="card">Tasks Assigned: 12</div>
-      <div class="card">Attendance Today: 8</div>
+      <div class="card">
+        <p class="card-label">My Department</p>
+        <span id="emp-department">—</span>
+      </div>
+      <div class="card">
+        <p class="card-label">My Position</p>
+        <span id="emp-position">—</span>
+      </div>
+      <div class="card">
+        <p class="card-label">Account Email</p>
+        <span id="emp-email">—</span>
+      </div>
     </div>
 
     <div class="section">
-      <h2>Manage Employees</h2>
-
-      <div class="form">
-        <input type="text" id="name" placeholder="Name">
-        <input type="text" id="department" placeholder="Department">
-        <input type="text" id="position" placeholder="Position">
-        <button onclick="saveEmployee()">Save</button>
-      </div>
-
+      <h2>My Colleagues</h2>
       <table>
         <thead>
           <tr>
             <th>Name</th>
             <th>Department</th>
             <th>Position</th>
-            <th>Actions</th>
           </tr>
         </thead>
-        <tbody id="employeeTable"></tbody>
+        <tbody id="colleaguesTable"></tbody>
       </table>
     </div>
   </div>

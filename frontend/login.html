@@ -5,35 +5,31 @@
   <title>Login - EMS</title>
   <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="auth-page">
 
-<div class="background-circle"></div>
+<div class="auth-wrapper">
+  <div class="login-container">
+    <h2>Welcome Back</h2>
+    <p>Login to continue</p>
 
-<!-- LOGIN CONTAINER -->
-<div class="login-container">
+    <input type="email" id="username" placeholder="Email address">
+    <input type="password" id="password" placeholder="Password">
 
-  <h2>Welcome Back</h2>
-  <p>Login to continue</p>
+    <select id="role">
+      <option value="admin">Employer</option>
+      <option value="employee">Employee</option>
+    </select>
 
-  <input type="text" id="username" placeholder="Username">
-  <input type="password" id="password" placeholder="Password">
+    <button class="btn-primary" onclick="login()">Login</button>
 
-  <select id="role">
-    <option value="admin">Employer</option>
-    <option value="employee">Employee</option>
-  </select>
-
-  <button class="btn-primary" onclick="login()">Login</button>
-
+    <p class="signup-link">Don't have an account? <a href="signup.html">Sign Up</a></p>
+    <p class="signup-link"><a href="index.html">← Back to Home</a></p>
+  </div>
 </div>
 
-  <p class="signup-link">
-    Don’t have an account?</p>
-   <a href="signup.html">Sign Up</a> <span><a href="index.html">Back</a></span>
-   
-  
-
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 <script src="script.js"></script>
-
 </body>
 </html>

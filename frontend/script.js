@@ -1,193 +1,213 @@
-const API = "http://localhost:5000/employees";
-
-// Load employees
-async function loadEmployees() {
-  const res = await fetch(API);
-  const data = await res.json();
-
-  const table = document.getElementById("employeeList");
-  table.innerHTML = "";
-
-  data.forEach(emp => {
-    table.innerHTML += `
-      <tr>
-        <td>${emp.name}</td>
-        <td>${emp.department}</td>
-        <td>${emp.position}</td>
-        <td>
-          <button onclick="deleteEmployee(${emp.id})">Delete</button>
-        </td>
-      </tr>
-    `;
-  });
-}
-
-// Add employee
-async function addEmployee() {
-  const name = document.getElementById("name").value;
-  const department = document.getElementById("department").value;
-  const position = document.getElementById("position").value;
-
-  await fetch(API, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({ name, department, position })
-  });
-
-  loadEmployees();
-}
-
-// Delete employee
-async function deleteEmployee(id) {
-  await fetch(`${API}/${id}`, {
-    method: "DELETE"
-  });
-
-  loadEmployees();
-}
-
-// Initialize
-loadEmployees();
-
-// ---------------------------admin-------------------------------
-
-// ---------------- AUTH CHECK ----------------
-window.onload = function () {
-  const user = JSON.parse(localStorage.getItem("currentUser"));
-
-  // Redirect if not logged in OR not admin
-  if (!user || user.role !== "admin") {
-    window.location = "login.html";
-    return;
-  }
-
-  // If user is valid → load dashboard data
-  updateDashboardStats();
+// Firebase config
+const firebaseConfig = {
+  apiKey: "AIzaSyD9kw2tyqNvAoMYCEopZvlTyy97FigTVlQ",
+  authDomain: "ems-system-d0f08.firebaseapp.com",
+  projectId: "ems-system-d0f08",
+  storageBucket: "ems-system-d0f08.firebasestorage.app",
+  messagingSenderId: "346869146384",
+  appId: "1:346869146384:web:03a69778b89e7691977b95"
 };
 
-// ---------------- DASHBOARD STATS ----------------
-function updateDashboardStats() {
-  const employees = JSON.parse(localStorage.getItem("employees")) || [];
-  const total = employees.length;
+firebase.initializeApp(firebaseConfig);
 
-  const el = document.getElementById("totalEmployees");
-  if (el) {
-    el.innerText = total;
+const auth = firebase.auth();
+const db = firebase.firestore();
+
+const getPageName = () => window.location.pathname.split("/").pop();
+
+const showError = (message) => window.alert(message);
+
+const navigateToDashboard = (role) => {
+  window.location.href = role === "admin" ? "admin.html" : "employee.html";
+};
+
+// ── Auth ──────────────────────────────────────────────────────────────────────
+
+async function signup() {
+  const username = document.getElementById("username").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value.trim();
+  const role = document.getElementById("role").value;
+
+  if (!username || !email || !password || !role) return showError("All fields are required");
+
+  const btn = document.getElementById("signup-btn");
+  btn.disabled = true;
+  btn.textContent = "Creating account...";
+
+  try {
+    const { user } = await auth.createUserWithEmailAndPassword(email, password);
+
+    await db.collection("users").doc(user.uid).set({
+      uid: user.uid,
+      username,
+      email,
+      role,
+      createdAt: new Date().toISOString()
+    });
+
+    document.getElementById("signup-success").style.display = "block";
+    btn.style.display = "none";
+    setTimeout(() => (window.location.href = "login.html"), 2500);
+  } catch (error) {
+    btn.disabled = false;
+    btn.textContent = "Sign Up";
+    showError(error.code === "auth/email-already-in-use" ? "Email already in use" : error.message);
   }
 }
 
-// -------------------------login------------------------------
-
-function login() {
-  const username = document.getElementById("username").value;
-  const password = document.getElementById("password").value;
+async function login() {
+  const username = document.getElementById("username").value.trim();
+  const password = document.getElementById("password").value.trim();
   const role = document.getElementById("role").value;
 
-  let users = JSON.parse(localStorage.getItem("users")) || [];
+  if (!username || !password || !role) return showError("All fields are required");
 
-  const user = users.find(u =>
-    u.username === username &&
-    u.password === password &&
-    u.role === role
-  );
+  try {
+    const { user } = await auth.signInWithEmailAndPassword(username, password);
+    const userDoc = await db.collection("users").doc(user.uid).get();
 
-  if (user) {
-    localStorage.setItem("currentUser", JSON.stringify(user));
+    if (!userDoc.exists) return showError("User profile not found");
 
-    if (role === "admin") {
-      window.location = "admin.html";
-    } else {
-      window.location = "employee.html";
+    const profile = userDoc.data();
+
+    if (profile.role !== role) {
+      await auth.signOut();
+      return showError("Selected role does not match this account");
     }
-  } else {
-    alert("Invalid username or password!");
+
+    navigateToDashboard(profile.role);
+  } catch (error) {
+    showError("Invalid credentials");
   }
 }
 
-// -----------------------------signup------------------------------
-
-function signup() {
-  const username = document.getElementById("username").value;
-  const password = document.getElementById("password").value;
-  const role = document.getElementById("role").value;
-
-  if (!username || !password) {
-    alert("Please fill all fields");
-    return;
-  }
-
-  let users = JSON.parse(localStorage.getItem("users")) || [];
-
-  const userExists = users.find(u => u.username === username);
-
-  if (userExists) {
-    alert("User already exists");
-    return;
-  }
-
-  users.push({ username, password, role });
-
-  localStorage.setItem("users", JSON.stringify(users));
-
-  alert("Account created successfully!");
-
-  window.location = "login.html";
+async function logout() {
+  await auth.signOut();
+  window.location.href = "login.html";
 }
 
-// ------------------load employees------------------
-async function loadEmployees() {
-  const res = await fetch("http://localhost:5000/api/employees");
-  const data = await res.json();
+// ── Employees ─────────────────────────────────────────────────────────────────
 
-  const table = document.getElementById("employeeTable");
-  table.innerHTML = "";
+function renderEmployees(employees) {
+  const tbody = document.getElementById("employeeTable");
+  const total = document.getElementById("totalEmployees");
+  if (!tbody) return;
 
-  data.forEach(emp => {
-    table.innerHTML += `
-      <tr>
-        <td>${emp.name}</td>
-        <td>${emp.department}</td>
-        <td>${emp.position}</td>
-        <td>
-          <button onclick="deleteEmployee(${emp.id})">Delete</button>
-        </td>
-      </tr>
-    `;
-  });
-
-  document.getElementById("totalEmployees").innerText = data.length;
+  total.textContent = employees.length;
+  tbody.innerHTML = employees.map((e) => `
+    <tr>
+      <td>${e.name}</td>
+      <td>${e.department}</td>
+      <td>${e.position}</td>
+      <td><button onclick="deleteEmployee('${e.id}')">Delete</button></td>
+    </tr>
+  `).join("");
 }
 
-// ------autoload employee------
-if (document.getElementById("employeeTable")) {
-  loadEmployees();
+function loadEmployees() {
+  db.collection("employees")
+    .orderBy("createdAt", "desc")
+    .onSnapshot((snapshot) => {
+      const employees = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+      renderEmployees(employees);
+    }, (error) => showError(error.message));
 }
 
-// -------------add employee----------------
 async function saveEmployee() {
-  const name = document.getElementById("name").value;
-  const department = document.getElementById("department").value;
-  const position = document.getElementById("position").value;
+  const name = document.getElementById("name").value.trim();
+  const department = document.getElementById("department").value.trim();
+  const position = document.getElementById("position").value.trim();
 
-  await fetch("http://localhost:5000/api/employees", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({ name, department, position })
-  });
+  if (!name || !department || !position) return showError("All fields are required");
 
-  loadEmployees();
+  try {
+    const user = auth.currentUser;
+    await db.collection("employees").add({
+      name,
+      department,
+      position,
+      createdAt: new Date().toISOString(),
+      createdBy: user.uid
+    });
+
+    document.getElementById("name").value = "";
+    document.getElementById("department").value = "";
+    document.getElementById("position").value = "";
+  } catch (error) {
+    showError(error.message);
+  }
 }
-
-// ---------------delete employees---------
 
 async function deleteEmployee(id) {
-  await fetch(`http://localhost:5000/api/employees/${id}`, {
-    method: "DELETE"
-  });
-
-  loadEmployees();
+  try {
+    await db.collection("employees").doc(id).delete();
+  } catch (error) {
+    showError(error.message);
+  }
 }
+
+// ── Page Guard ────────────────────────────────────────────────────────────────
+
+function initializePage() {
+  const page = getPageName();
+
+  if (page === "admin.html") {
+    auth.onAuthStateChanged(async (user) => {
+      if (!user) return (window.location.href = "login.html");
+
+      const userDoc = await db.collection("users").doc(user.uid).get();
+      if (!userDoc.exists || userDoc.data().role !== "admin") {
+        await auth.signOut();
+        return (window.location.href = "login.html");
+      }
+
+      loadEmployees();
+    });
+  }
+
+  if (page === "employee.html") {
+    auth.onAuthStateChanged(async (user) => {
+      if (!user) return (window.location.href = "login.html");
+
+      const userDoc = await db.collection("users").doc(user.uid).get();
+      if (!userDoc.exists || userDoc.data().role !== "employee") {
+        await auth.signOut();
+        return (window.location.href = "login.html");
+      }
+
+      const profile = userDoc.data();
+      document.getElementById("emp-name").textContent = profile.username;
+      document.getElementById("emp-email").textContent = profile.email;
+
+      // Find this employee's record in the employees collection
+      const snapshot = await db.collection("employees")
+        .where("createdBy", "==", user.uid)
+        .limit(1)
+        .get();
+
+      if (!snapshot.empty) {
+        const emp = snapshot.docs[0].data();
+        document.getElementById("emp-department").textContent = emp.department;
+        document.getElementById("emp-position").textContent = emp.position;
+      }
+
+      // Load colleagues
+      db.collection("employees").orderBy("createdAt", "desc").onSnapshot((snap) => {
+        const tbody = document.getElementById("colleaguesTable");
+        tbody.innerHTML = snap.docs.map((doc) => {
+          const e = doc.data();
+          return `<tr><td>${e.name}</td><td>${e.department}</td><td>${e.position}</td></tr>`;
+        }).join("");
+      });
+    });
+  }
+}
+
+window.signup = signup;
+window.login = login;
+window.logout = logout;
+window.saveEmployee = saveEmployee;
+window.deleteEmployee = deleteEmployee;
+
+document.addEventListener("DOMContentLoaded", initializePage);
