@@ -366,3 +366,138 @@ th, td {
   font-weight: 600;
   color: #111;
 }
+
+/* ----------------------------- about ------------------------------ */
+
+.about-hero {
+  text-align: center;
+  padding: 80px 10% 40px;
+  background: linear-gradient(135deg, #eef2ff, #dbeafe);
+}
+
+.about-hero h1 {
+  font-size: 42px;
+  margin-bottom: 14px;
+  color: #111;
+}
+
+.about-hero p {
+  font-size: 18px;
+  color: #555;
+}
+
+.about-content {
+  padding: 60px 10%;
+  background: #f9fafb;
+}
+
+.about-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 24px;
+}
+
+.about-card {
+  background: white;
+  padding: 32px 24px;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  text-align: center;
+  transition: transform 0.3s;
+}
+
+.about-card:hover {
+  transform: translateY(-5px);
+}
+
+.about-icon {
+  font-size: 36px;
+  margin-bottom: 16px;
+}
+
+.about-card h3 {
+  margin-bottom: 12px;
+  color: #111;
+}
+
+.about-card p {
+  color: #666;
+  line-height: 1.6;
+  font-size: 14px;
+}
+
+.about-story {
+  padding: 60px 10%;
+}
+
+.story-container {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.story-container h2 {
+  font-size: 32px;
+  margin-bottom: 24px;
+  color: #111;
+}
+
+.story-container p {
+  color: #555;
+  line-height: 1.8;
+  margin-bottom: 16px;
+  font-size: 15px;
+}
+
+.about-team {
+  padding: 60px 10%;
+  background: #f9fafb;
+  text-align: center;
+}
+
+.about-team h2 {
+  font-size: 32px;
+  margin-bottom: 40px;
+  color: #111;
+}
+
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 24px;
+}
+
+.team-card {
+  background: white;
+  padding: 28px 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  transition: transform 0.3s;
+}
+
+.team-card:hover {
+  transform: translateY(-5px);
+}
+
+.team-avatar {
+  font-size: 48px;
+  margin-bottom: 12px;
+}
+
+.team-card h4 {
+  font-size: 16px;
+  margin-bottom: 4px;
+  color: #111;
+}
+
+.team-role {
+  color: #4f46e5;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.team-bio {
+  color: #888;
+  font-size: 13px;
+  line-height: 1.5;
+}
