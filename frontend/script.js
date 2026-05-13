@@ -202,9 +202,34 @@ function initializePage() {
   }
 }
 
+function toggleReset(show) {
+  document.querySelector(".login-container").style.display = show ? "none" : "block";
+  document.getElementById("reset-box").style.display = show ? "block" : "none";
+  document.getElementById("reset-msg").textContent = "";
+}
+
+async function resetPassword() {
+  const email = document.getElementById("reset-email").value.trim();
+  const msgEl = document.getElementById("reset-msg");
+
+  if (!email) { msgEl.className = "reset-error"; msgEl.textContent = "Please enter your email."; return; }
+
+  try {
+    await auth.sendPasswordResetEmail(email);
+    msgEl.className = "reset-success";
+    msgEl.textContent = "Reset link sent! Check your inbox.";
+    document.getElementById("reset-email").value = "";
+  } catch (error) {
+    msgEl.className = "reset-error";
+    msgEl.textContent = error.code === "auth/user-not-found" ? "No account found with this email." : "Failed to send reset email.";
+  }
+}
+
 window.signup = signup;
 window.login = login;
 window.logout = logout;
+window.toggleReset = toggleReset;
+window.resetPassword = resetPassword;
 window.saveEmployee = saveEmployee;
 window.deleteEmployee = deleteEmployee;
 
